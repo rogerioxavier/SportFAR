@@ -1,0 +1,118 @@
+Table COMPANY {
+    id INTEGER [primary key]
+    name VARCHAR(100) [not null]
+    url_substring VARCHAR(100) [not null]
+    logo MEDIUMBLOB
+}
+
+Table USERS {
+  id INTEGER [primary key]
+  full_name VARCHAR(100) [not null]
+  cpf VARCHAR(11) [not null, unique]
+  birth_date DATE  [not null]
+  email VARCHAR(100) [not null]
+  password BCRYPT
+  password_temp bool [default: True]
+  address VARCHAR(200) [not null]
+  city VARCHAR(100) [not null]
+  cep VARCHAR(8) [not null]
+  phone VARCHAR(100)
+  photo MEDIUMBLOB
+}
+
+Table USERS_USERTYPE {
+  id INTEGER [primary key]
+  user_id INTEGER [not null]
+  user_type_id INTEGER [not null]
+  company_id INTEGER [not null]
+}
+
+Table USERTYPE {
+  id INTEGER [primary key]
+  type VARCHAR(100) [not null]
+}
+
+Table EDUCATORS_CLASSES {
+  id INTEGER [primary key]
+  educator_id INTEGER [not null]
+  class_id INTEGER [not null]
+
+}
+
+Table COURSES {
+  id INTEGER [primary key]
+  name VARCHAR(100) [not null]
+  company_id INTEGER [not null]
+}
+
+Table CLASSES {
+  id INTEGER [primary key]
+  name VARCHAR(100) [not null]
+  capacity INTEGER [not null]
+  year_from INTEGER [not null]
+  year_to INTEGER [not null]
+  hour_start TIMESTAMP [not null]
+  hour_end TIMESTAMP
+  status BOOL [default: true]
+  date_start DATE [not null]
+  date_end DATE [not null]
+  date_start_enroll DATE [not null]
+  date_end_enroll DATE [not null]
+  week_day_id INTEGER [not null]
+  gender INTEGER
+  course_id INTEGER [not null]
+}
+
+Table WEEKDAYS {
+  id INTEGER [primary key]
+  name VARCHAR(100) [not null]
+}
+
+Table CLASSROOM {
+  id INTEGER [primary key]
+  class_date DATE [not null]
+  class_id INTEGER [not null]  
+}
+
+Table ABSENCE {
+    id INTEGER [primary key]
+    classroom_id INTEGER [not null]
+    user_id INTEGER [not null]
+    type_id INTEGER [not null]
+}
+
+Table ABSENCE_TYPE {
+  id INTEGER [primary key]
+  type VARCHAR(20) [not null]
+}
+
+Table USER_CLASS {
+  id INTEGER [primary key]
+  enrolled BOOL [not null, default: False]
+  user_id INTEGER [not null]
+  class_id INTEGER [not null]
+}
+
+Table GUARDIAN_STUDENT {
+  id INTEGER [primary key]
+  guardian_id INTEGER [not null]
+  student_id INTEGER [not null]
+}
+
+ref: COMPANY.id < COURSES.company_id
+ref: USERS.id < USERS_USERTYPE.user_id
+ref: USERTYPE.id < USERS_USERTYPE.user_type_id
+ref: COURSES.id < CLASSES.course_id
+ref: CLASSES.id < CLASSROOM.class_id
+ref: CLASSROOM.id < ABSENCE.classroom_id
+ref: USERS.id < ABSENCE.user_id
+ref: USERS.id < USER_CLASS.user_id
+ref: CLASSES.id < USER_CLASS.class_id
+ref: ABSENCE_TYPE.id < ABSENCE.type_id
+ref: COMPANY.id < USERS_USERTYPE.company_id
+ref: USERS.id < GUARDIAN_STUDENT.guardian_id
+ref: USERS.id < GUARDIAN_STUDENT.student_id
+ref: USERS.id < EDUCATORS_CLASSES.educator_id
+ref: CLASSES.id < EDUCATORS_CLASSES.class_id
+ref: WEEKDAYS.id < CLASSES.week_day_id
+
